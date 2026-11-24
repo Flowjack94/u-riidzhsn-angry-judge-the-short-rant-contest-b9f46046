@@ -16,7 +16,21 @@ ENTRY = (
 )
 
 
+def validate_entry() -> None:
+    """Assert the entry meets the contest rules: non-empty, under 400
+    UTF-8 characters, and one single text (no blank lines / separators)."""
+    assert ENTRY, "entry must not be empty"
+    assert len(ENTRY.encode("utf-8")) < 400, (
+        f"entry is {len(ENTRY.encode('utf-8'))} UTF-8 characters, over the 400 cap"
+    )
+    assert "\n\n" not in ENTRY, "entry must be a single text, no double blank lines"
+    assert not any(
+        sep in ENTRY for sep in ("---", "===", "***")
+    ), "entry must be a single text, no separators"
+
+
 def main() -> None:
+    validate_entry()
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(ENTRY)
